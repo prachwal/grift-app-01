@@ -75,3 +75,10 @@ src/
 ```
 
 Projekt jest gotowy do dalszego rozwoju: rozbudowy komponentów, integracji z API, rozszerzania testów oraz dokumentacji.
+
+## Wytyczne testowania
+
+- **Uruchamianie testów**: Używaj `npm run test:run` aby uniknąć oczekiwania na 'q' i zakończyć testy automatycznie
+- **Testy jednostkowe**: Każdy plik .ts powinien mieć odpowiadający plik .test.ts z testami
+- **Testy komponentów**: Używaj @testing-library/preact do testowania komponentów .tsx
+- **Pokrycie kodu**: Sprawdzaj wszystkie ścieżki kodu, edge cases i obsługę błędów
