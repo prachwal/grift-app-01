@@ -3,17 +3,8 @@
  * Centralized place for all API calls and data fetching
  */
 
-export interface ApiResponse<T> {
-    data: T;
-    status: number;
-    message?: string;
-}
 
-export interface ApiError {
-    message: string;
-    status: number;
-    code?: string;
-}
+import type { ApiResponse, ApiError } from '../types/api';
 
 /**
  * Base API client with common configurations
@@ -48,8 +39,13 @@ class ApiClient {
             const data = await response.json();
 
             return {
-                data,
-                status: response.status,
+                payload: data,
+                status: response.ok,
+                metadata: {
+                    timestamp: new Date().toISOString(),
+                    path: endpoint,
+                    method: options.method as string || 'GET',
+                },
             };
         } catch (error) {
             throw {

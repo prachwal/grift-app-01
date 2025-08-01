@@ -27,7 +27,8 @@
   "include": [
     "src",
     "src/test/setup.ts",
-    "src/types/global.d.ts"
+    "src/types/global.d.ts",
+    "netlify/functions/**/*"
   ],
   "files": [],
   "references": [

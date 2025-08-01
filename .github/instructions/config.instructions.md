@@ -3,6 +3,12 @@ applyTo: '**'
 ---
 Provide project context and coding guidelines that AI should follow when generating code, answering questions, or reviewing changes.
 
+# Dokumentacja API
+
+Szczegółowy opis sposobu tworzenia i reużywania warstwy API (komendy, walidacja, obsługa błędów, przykłady) znajduje się w pliku [`netlify/functions/_lib/README.md`](../../netlify/functions/_lib/README.md).
+
+Zalecane: zapoznaj się z tym README przed implementacją nowych endpointów lub refaktoryzacją funkcji API.
+
 # Opis projektu
 
 Projekt frontendowy oparty o Preact, Vite oraz TypeScript. Wykorzystuje nowoczesną architekturę z separacją warstw prezentacji (komponenty), stron (pages/layouts) oraz logiki biznesowej (services, hooks). Zarządzanie stanem realizowane jest z @preact/signals. System design tokens zapewnia spójność motywu i wsparcie dla dark mode. Testy jednostkowe i integracyjne realizowane są z użyciem Vitest i @testing-library/preact. Storybook służy do dokumentacji i prezentacji komponentów.

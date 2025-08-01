@@ -1,0 +1,27 @@
+# example netlify.toml
+[build]
+command = "npm run build"
+functions = "netlify/functions"
+publish = "dist"
+
+[[redirects]]
+from = "/api/*"
+to = "/.netlify/functions/:splat"
+status = 200
+
+[[redirects]]
+from = "/*"
+to = "/index.html"
+status = 200
+
+[[headers]]
+for = "/*"
+[headers.values]
+Cache-Control = "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0"
+
+[dev]
+command = "npm run dev" # Command to start your dev server
+port = 3000             # Port that the dev server will be listening on
+publish = "dist"        # Folder with the static content for _redirect file
+targetPort = 5173       # Port that the dev server will be listening on
+framework = "vite"      # Framework used for the project
