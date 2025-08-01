@@ -1,11 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/preact';
 import { userEvent, within } from 'storybook/test';
 
-import { Page } from './Page.tsx';
+import { HomePage } from '../pages/HomePage.tsx';
 
-const meta: Meta<typeof Page> = {
+const meta: Meta<typeof HomePage> = {
   title: 'Example/Page',
-  component: Page,
+  component: HomePage,
   parameters: {
     // More on how to position stories at: https://storybook.js.org/docs/configure/story-layout
     layout: 'fullscreen',

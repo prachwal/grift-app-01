@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/preact';
-import { Header } from './Header.tsx';
+import { Header } from '../layouts/Header.tsx';
 
 const meta: Meta<typeof Header> = {
   title: 'Design System/Header',

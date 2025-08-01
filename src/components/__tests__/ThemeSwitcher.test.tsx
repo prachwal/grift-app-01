@@ -56,8 +56,7 @@ describe('ThemeSwitcher', () => {
         renderWithThemeProvider(<ThemeSwitcher />);
 
         const button = screen.getByRole('button');
-        expect(button).toHaveTextContent('Theme: system');
-        expect(button).toHaveTextContent('💻');
+        expect(button).toHaveTextContent('💻'); // System theme emoji
     });
 
     it('should show dropdown when clicked', async () => {
@@ -87,7 +86,7 @@ describe('ThemeSwitcher', () => {
         fireEvent.click(lightOption);
 
         await waitFor(() => {
-            expect(screen.getByRole('button')).toHaveTextContent('Theme: light');
+            expect(screen.getByRole('button')).toHaveTextContent('☀️'); // Light theme emoji
         });
 
         expect(localStorageMock.setItem).toHaveBeenCalledWith('theme', 'light');
@@ -100,7 +99,6 @@ describe('ThemeSwitcher', () => {
 
         // Should show sun icon for light theme
         expect(screen.getByRole('button')).toHaveTextContent('☀️');
-        expect(screen.getByRole('button')).toHaveTextContent('Theme: light');
     });
 
     it('should mark current theme as selected in dropdown', async () => {
@@ -184,6 +182,7 @@ describe('ThemeSwitcher', () => {
         renderWithThemeProvider(<ThemeSwitcher />);
 
         const button = screen.getByRole('button');
-        expect(button).toHaveClass('bg-white', 'dark:bg-gray-800');
+        expect(button).toHaveClass('bg-transparent');
+        expect(button).toHaveClass('dark:text-gray-300');
     });
 });

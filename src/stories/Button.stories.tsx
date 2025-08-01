@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/preact';
-import { Button } from './Button';
+
+import { Button } from '../components/Button.tsx';
 
 const meta: Meta<typeof Button> = {
   title: 'Design System/Button',

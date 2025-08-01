@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/preact';
-import { Button } from '../../stories/Button';
+import { Button } from '../Button';
 
 describe('Button', () => {
     it('renders with label', () => {

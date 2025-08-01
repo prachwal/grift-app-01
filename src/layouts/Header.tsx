@@ -1,5 +1,5 @@
 import { ThemeSwitcher } from '../components/ThemeSwitcher.tsx';
-import { Button } from './Button.tsx';
+import { Button } from '../components/Button.tsx';
 
 export interface User {
   name: string;

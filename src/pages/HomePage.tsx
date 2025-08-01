@@ -1,13 +1,14 @@
-import { useState } from 'preact/hooks';
-import { Button } from './Button.tsx';
+import { Button } from '../components/Button.tsx';
+import { useUser } from '../hooks/useUser';
 
 export interface PageProps {
-  // Add any props if needed
+  /*...*/
 }
 
 /** Simple page component */
-export const Page: React.FC<PageProps> = () => {
-  const [user, setUser] = useState<{ name: string } | undefined>();
+export const HomePage: React.FC<PageProps> = () => {
+  const { user, createAccount, logout, login } = useUser();
+  const currentUser = user.value;
 
   return (
     <article className="max-w-none text-gray-700 dark:text-gray-300 text-base leading-relaxed transition-colors duration-300">
@@ -118,15 +119,15 @@ export const Page: React.FC<PageProps> = () => {
               Interactive Demo
             </h3>
             <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-              {user ? (
+              {currentUser ? (
                 <div className="flex items-center space-x-3">
                   <div className="w-10 h-10 bg-primary-100 dark:bg-primary-900 rounded-full flex items-center justify-center">
                     <span className="text-sm font-medium text-primary-700 dark:text-primary-300">
-                      {user.name.charAt(0).toUpperCase()}
+                      {currentUser.name.charAt(0).toUpperCase()}
                     </span>
                   </div>
                   <span className="text-gray-900 dark:text-gray-100">
-                    Welcome, <strong>{user.name}</strong>!
+                    Welcome, <strong>{currentUser.name}</strong>!
                   </span>
                 </div>
               ) : (
@@ -136,12 +137,12 @@ export const Page: React.FC<PageProps> = () => {
               )}
 
               <div className="flex space-x-2">
-                {user ? (
+                {currentUser ? (
                   <Button
                     variant="outline"
                     size="sm"
                     label="Log out"
-                    onClick={() => setUser(undefined)}
+                    onClick={logout}
                   />
                 ) : (
                   <>
@@ -149,13 +150,13 @@ export const Page: React.FC<PageProps> = () => {
                       variant="ghost"
                       size="sm"
                       label="Log in"
-                      onClick={() => setUser({ name: 'Jane Doe' })}
+                      onClick={() => login('Jane Doe')}
                     />
                     <Button
                       variant="primary"
                       size="sm"
                       label="Sign up"
-                      onClick={() => setUser({ name: 'John Smith' })}
+                      onClick={() => createAccount('John Smith')}
                     />
                   </>
                 )}
