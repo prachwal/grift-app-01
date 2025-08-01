@@ -4,8 +4,14 @@ import { ThemeProvider } from '../theme/ThemeProvider';
 
 /**
  * ThemeSwitcher component allows users to switch between light, dark, and system themes.
- * It uses a custom dropdown implementation for compatibility with Preact and automatically 
- * persists theme preference in localStorage.
+ * It uses a custom dropdown implementation with consistent Button styling.
+ * Features:
+ * - Three theme options: Light, Dark, System
+ * - Consistent styling with Button component
+ * - Keyboard navigation support
+ * - Click outside to close
+ * - Accessible with proper ARIA attributes
+ * - Smooth transitions and animations
  */
 const meta = {
     title: 'Design System/ThemeSwitcher',

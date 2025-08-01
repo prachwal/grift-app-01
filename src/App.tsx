@@ -2,7 +2,6 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { store } from './store/store';
 import { ThemeProvider } from './theme/ThemeProvider';
-import { ThemeSwitcher } from './components/ThemeSwitcher';
 import { Header } from './stories/Header';
 import { Page } from './stories/Page';
 
@@ -25,11 +24,6 @@ function App() {
                             <div className="min-h-screen flex items-start justify-center px-4 py-8">
                                 {/* A4-sized content container */}
                                 <div className="w-full max-w-a4 bg-white dark:bg-gray-800 shadow-lg rounded-lg overflow-hidden transition-colors duration-300">
-                                    {/* Theme switcher in top-right corner */}
-                                    <div className="absolute top-20 right-4 z-dropdown">
-                                        <ThemeSwitcher />
-                                    </div>
-
                                     {/* Page content */}
                                     <div className="p-8 md:p-12">
                                         <Routes>

@@ -1,3 +1,4 @@
+import { ThemeSwitcher } from '../components/ThemeSwitcher.tsx';
 import { Button } from './Button.tsx';
 
 export interface User {
@@ -77,6 +78,7 @@ export const Header: React.FC<HeaderProps> = ({
                 onClick={onLogout}
                 label="Log out"
               />
+              <ThemeSwitcher />
             </div>
           ) : (
             <div className="flex items-center space-x-3">
@@ -92,6 +94,7 @@ export const Header: React.FC<HeaderProps> = ({
                 onClick={onCreateAccount}
                 label="Sign up"
               />
+              <ThemeSwitcher />
             </div>
           )}
         </div>
