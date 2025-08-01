@@ -9,6 +9,11 @@ export default defineConfig({
             "react-dom": "preact/compat"
         }
     },
+    server: {
+        fs: {
+            allow: ['..']
+        }
+    },
     // @ts-ignore
     test: {
         globals: true,

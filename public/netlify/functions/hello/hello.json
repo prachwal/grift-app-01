@@ -1,0 +1,373 @@
+{
+    "collection": {
+        "id": "hello-functions",
+        "name": "Hello API Functions",
+        "description": "Collection of hello service endpoints",
+        "version": "1.0.0",
+        "baseUrl": "/.netlify/functions"
+    },
+    "commands": {
+        "hello": {
+            "name": "Hello Command",
+            "description": "Simple greeting command with optional name parameter",
+            "method": "GET",
+            "path": "/hello",
+            "parameters": {
+                "cmd": {
+                    "type": "string",
+                    "required": true,
+                    "defaultValue": "hello",
+                    "description": "Command to execute"
+                },
+                "name": {
+                    "type": "string",
+                    "required": false,
+                    "defaultValue": "World",
+                    "description": "Name to greet",
+                    "min": 1,
+                    "max": 64
+                }
+            },
+            "responses": [
+                {
+                    "statusCode": 200,
+                    "description": "Successful greeting",
+                    "body": {
+                        "success": true,
+                        "data": {
+                            "message": "Hello World!",
+                            "timestamp": "2025-01-01T12:00:00.000Z"
+                        },
+                        "meta": {
+                            "timestamp": "2025-01-01T12:00:00.000Z",
+                            "requestId": "abc123"
+                        }
+                    }
+                }
+            ],
+            "testCases": [
+                {
+                    "name": "Default greeting",
+                    "parameters": {
+                        "cmd": "hello"
+                    },
+                    "expectedStatus": 200,
+                    "description": "Should return default greeting",
+                    "expectedBodyContains": [
+                        "Hello World!"
+                    ]
+                },
+                {
+                    "name": "Custom name greeting",
+                    "parameters": {
+                        "cmd": "hello",
+                        "name": "Alice"
+                    },
+                    "expectedStatus": 200,
+                    "description": "Should return custom name greeting",
+                    "expectedBodyContains": [
+                        "Hello Alice!"
+                    ]
+                }
+            ],
+            "tags": [
+                "greeting",
+                "basic"
+            ]
+        },
+        "health": {
+            "name": "Health Command",
+            "description": "System health check with optional detailed information",
+            "method": "GET",
+            "path": "/hello",
+            "parameters": {
+                "cmd": {
+                    "type": "string",
+                    "required": true,
+                    "defaultValue": "health",
+                    "description": "Command to execute"
+                },
+                "detailed": {
+                    "type": "boolean",
+                    "required": false,
+                    "defaultValue": false,
+                    "description": "Return detailed health information"
+                }
+            },
+            "responses": [
+                {
+                    "statusCode": 200,
+                    "description": "Health status",
+                    "body": {
+                        "success": true,
+                        "data": {
+                            "status": "healthy",
+                            "timestamp": "2025-01-01T12:00:00.000Z",
+                            "uptime": 3600,
+                            "responseTime": 5
+                        }
+                    }
+                }
+            ],
+            "testCases": [
+                {
+                    "name": "Basic health check",
+                    "parameters": {
+                        "cmd": "health"
+                    },
+                    "expectedStatus": 200,
+                    "description": "Should return basic health status",
+                    "expectedBodyContains": [
+                        "healthy"
+                    ]
+                },
+                {
+                    "name": "Detailed health check",
+                    "parameters": {
+                        "cmd": "health",
+                        "detailed": true
+                    },
+                    "expectedStatus": 200,
+                    "description": "Should return detailed health information",
+                    "expectedBodyContains": [
+                        "healthy",
+                        "details"
+                    ]
+                }
+            ],
+            "tags": [
+                "health",
+                "monitoring"
+            ]
+        },
+        "status": {
+            "name": "Status Command",
+            "description": "Check status of system components",
+            "method": "GET",
+            "path": "/hello",
+            "parameters": {
+                "cmd": {
+                    "type": "string",
+                    "required": true,
+                    "defaultValue": "status",
+                    "description": "Command to execute"
+                },
+                "component": {
+                    "type": "string",
+                    "required": false,
+                    "defaultValue": "all",
+                    "description": "Component to check",
+                    "enum": [
+                        "api",
+                        "database",
+                        "cache",
+                        "all"
+                    ]
+                }
+            },
+            "responses": [
+                {
+                    "statusCode": 200,
+                    "description": "Component status",
+                    "body": {
+                        "success": true,
+                        "data": {
+                            "overall": "operational",
+                            "components": [
+                                {
+                                    "name": "API",
+                                    "status": "operational",
+                                    "uptime": "99.9%"
+                                },
+                                {
+                                    "name": "Database",
+                                    "status": "operational",
+                                    "uptime": "99.8%"
+                                },
+                                {
+                                    "name": "Cache",
+                                    "status": "operational",
+                                    "uptime": "99.95%"
+                                }
+                            ],
+                            "timestamp": "2025-01-01T12:00:00.000Z"
+                        }
+                    }
+                }
+            ],
+            "testCases": [
+                {
+                    "name": "All components status",
+                    "parameters": {
+                        "cmd": "status"
+                    },
+                    "expectedStatus": 200,
+                    "description": "Should return status of all components",
+                    "expectedBodyContains": [
+                        "operational"
+                    ]
+                },
+                {
+                    "name": "API component status",
+                    "parameters": {
+                        "cmd": "status",
+                        "component": "api"
+                    },
+                    "expectedStatus": 200,
+                    "description": "Should return API component status",
+                    "expectedBodyContains": [
+                        "API",
+                        "operational"
+                    ]
+                }
+            ],
+            "tags": [
+                "status",
+                "monitoring"
+            ]
+        },
+        "info": {
+            "name": "Info Command",
+            "description": "Get detailed system information",
+            "method": "GET",
+            "path": "/hello",
+            "parameters": {
+                "cmd": {
+                    "type": "string",
+                    "required": true,
+                    "defaultValue": "info",
+                    "description": "Command to execute"
+                },
+                "include": {
+                    "type": "array",
+                    "required": false,
+                    "defaultValue": [
+                        "system"
+                    ],
+                    "description": "Information categories to include",
+                    "enum": [
+                        "system",
+                        "runtime",
+                        "memory",
+                        "environment"
+                    ]
+                }
+            },
+            "responses": [
+                {
+                    "statusCode": 200,
+                    "description": "System information",
+                    "body": {
+                        "success": true,
+                        "data": {
+                            "timestamp": "2025-01-01T12:00:00.000Z",
+                            "system": {
+                                "platform": "linux",
+                                "version": "v18.19.0"
+                            }
+                        }
+                    }
+                }
+            ],
+            "testCases": [
+                {
+                    "name": "System info",
+                    "parameters": {
+                        "cmd": "info"
+                    },
+                    "expectedStatus": 200,
+                    "description": "Should return system information",
+                    "expectedBodyContains": [
+                        "system"
+                    ]
+                },
+                {
+                    "name": "Multiple info categories",
+                    "parameters": {
+                        "cmd": "info",
+                        "include": [
+                            "system",
+                            "runtime",
+                            "memory"
+                        ]
+                    },
+                    "expectedStatus": 200,
+                    "description": "Should return multiple info categories",
+                    "expectedBodyContains": [
+                        "system",
+                        "runtime",
+                        "memory"
+                    ]
+                }
+            ],
+            "tags": [
+                "info",
+                "system"
+            ]
+        },
+        "ping": {
+            "name": "Ping Command",
+            "description": "Simple ping-pong test for connectivity",
+            "method": "GET",
+            "path": "/hello",
+            "parameters": {
+                "cmd": {
+                    "type": "string",
+                    "required": true,
+                    "defaultValue": "ping",
+                    "description": "Command to execute"
+                },
+                "echo": {
+                    "type": "string",
+                    "required": false,
+                    "defaultValue": "pong",
+                    "description": "Message to echo back",
+                    "max": 256
+                }
+            },
+            "responses": [
+                {
+                    "statusCode": 200,
+                    "description": "Ping response",
+                    "body": {
+                        "success": true,
+                        "data": {
+                            "echo": "pong",
+                            "timestamp": "2025-01-01T12:00:00.000Z",
+                            "latency": 5
+                        }
+                    }
+                }
+            ],
+            "testCases": [
+                {
+                    "name": "Default ping",
+                    "parameters": {
+                        "cmd": "ping"
+                    },
+                    "expectedStatus": 200,
+                    "description": "Should return pong",
+                    "expectedBodyContains": [
+                        "pong"
+                    ]
+                },
+                {
+                    "name": "Custom echo",
+                    "parameters": {
+                        "cmd": "ping",
+                        "echo": "hello"
+                    },
+                    "expectedStatus": 200,
+                    "description": "Should echo custom message",
+                    "expectedBodyContains": [
+                        "hello"
+                    ]
+                }
+            ],
+            "tags": [
+                "ping",
+                "connectivity"
+            ]
+        }
+    }
+}

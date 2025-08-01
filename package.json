@@ -12,7 +12,10 @@
     "test": "vitest",
     "test:ui": "vitest --ui",
     "test:run": "vitest run",
-    "test:coverage": "vitest --coverage"
+    "test:coverage": "vitest --coverage",
+    "copy-json": "./scripts/copy-json-definitions.sh",
+    "copy-json-dev": "mkdir -p public/api/definitions && mkdir -p .netlify/functions-serve/api/definitions && find netlify/functions -name '*.json' -exec cp {} public/api/definitions/ \\; && find netlify/functions -name '*.json' -exec cp {} .netlify/functions-serve/api/definitions/ \\;",
+    "dev:full": "npm run copy-json-dev && npm run dev"
   },
   "dependencies": {
     "@netlify/functions": "^4.2.1",
