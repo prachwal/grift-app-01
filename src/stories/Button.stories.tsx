@@ -1,27 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/preact';
-import { fn } from 'storybook/test';
-
-import { Button } from './Button.tsx';
+import { Button } from './Button';
 
 const meta: Meta<typeof Button> = {
   title: 'Design System/Button',
   component: Button,
   tags: ['autodocs'],
-  argTypes: {
-    variant: {
-      control: { type: 'select' },
-      options: ['primary', 'secondary', 'outline', 'ghost'],
-    },
-    size: {
-      control: { type: 'select' },
-      options: ['sm', 'md', 'lg'],
-    },
-    disabled: { control: 'boolean' },
-    fullWidth: { control: 'boolean' },
-    loading: { control: 'boolean' },
-    onClick: { action: 'onClick' },
-  },
-  args: { onClick: fn() },
   parameters: {
     docs: {
       description: {
@@ -45,112 +28,166 @@ Features:
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-// Primary Stories
+// Variant Stories
 export const Primary: Story = {
-  args: {
-    variant: 'primary',
-    label: 'Primary Button',
-  },
+  render: () => (
+    <Button
+      variant="primary"
+      label="Primary Button"
+      onClick={() => console.log('Primary clicked')}
+    />
+  ),
 };
 
 export const Secondary: Story = {
-  args: {
-    variant: 'secondary',
-    label: 'Secondary Button',
-  },
+  render: () => (
+    <Button
+      variant="secondary"
+      label="Secondary Button"
+      onClick={() => console.log('Secondary clicked')}
+    />
+  ),
 };
 
 export const Outline: Story = {
-  args: {
-    variant: 'outline',
-    label: 'Outline Button',
-  },
+  render: () => (
+    <Button
+      variant="outline"
+      label="Outline Button"
+      onClick={() => console.log('Outline clicked')}
+    />
+  ),
 };
 
 export const Ghost: Story = {
-  args: {
-    variant: 'ghost',
-    label: 'Ghost Button',
-  },
+  render: () => (
+    <Button
+      variant="ghost"
+      label="Ghost Button"
+      onClick={() => console.log('Ghost clicked')}
+    />
+  ),
 };
 
-// Size variants
+// Size Stories
 export const Small: Story = {
-  args: {
-    size: 'sm',
-    label: 'Small Button',
-  },
+  render: () => (
+    <Button
+      variant="primary"
+      size="sm"
+      label="Small Button"
+      onClick={() => console.log('Small clicked')}
+    />
+  ),
 };
 
 export const Medium: Story = {
-  args: {
-    size: 'md',
-    label: 'Medium Button',
-  },
+  render: () => (
+    <Button
+      variant="primary"
+      size="md"
+      label="Medium Button"
+      onClick={() => console.log('Medium clicked')}
+    />
+  ),
 };
 
 export const Large: Story = {
-  args: {
-    size: 'lg',
-    label: 'Large Button',
-  },
+  render: () => (
+    <Button
+      variant="primary"
+      size="lg"
+      label="Large Button"
+      onClick={() => console.log('Large clicked')}
+    />
+  ),
 };
 
-// States
-export const Loading: Story = {
-  args: {
-    variant: 'primary',
-    label: 'Loading...',
-    loading: true,
-  },
-};
-
+// State Stories
 export const Disabled: Story = {
-  args: {
-    variant: 'primary',
-    label: 'Disabled Button',
-    disabled: true,
-  },
+  render: () => (
+    <Button
+      variant="primary"
+      disabled={true}
+      label="Disabled Button"
+      onClick={() => console.log('Disabled clicked')}
+    />
+  ),
+};
+
+export const Loading: Story = {
+  render: () => (
+    <Button
+      variant="primary"
+      loading={true}
+      label="Loading Button"
+      onClick={() => console.log('Loading clicked')}
+    />
+  ),
 };
 
 export const FullWidth: Story = {
-  args: {
-    variant: 'primary',
-    label: 'Full Width Button',
-    fullWidth: true,
-  },
+  render: () => (
+    <Button
+      variant="primary"
+      fullWidth={true}
+      label="Full Width Button"
+      onClick={() => console.log('Full width clicked')}
+    />
+  ),
   parameters: {
     layout: 'padded',
   },
 };
 
-// All variants showcase
+// Showcase Stories
 export const AllVariants: Story = {
   render: () => (
-    <div className="space-y-4">
-      <div className="flex flex-wrap gap-4">
-        <Button variant="primary" label="Primary" onClick={fn()} />
-        <Button variant="secondary" label="Secondary" onClick={fn()} />
-        <Button variant="outline" label="Outline" onClick={fn()} />
-        <Button variant="ghost" label="Ghost" onClick={fn()} />
-      </div>
-
-      <div className="flex flex-wrap gap-4">
-        <Button variant="primary" size="sm" label="Small" onClick={fn()} />
-        <Button variant="primary" size="md" label="Medium" onClick={fn()} />
-        <Button variant="primary" size="lg" label="Large" onClick={fn()} />
-      </div>
-
-      <div className="flex flex-wrap gap-4">
-        <Button variant="primary" label="Loading" loading onClick={fn()} />
-        <Button variant="secondary" label="Disabled" disabled onClick={fn()} />
-      </div>
+    <div className="flex flex-wrap gap-4">
+      <Button variant="primary" label="Primary" onClick={() => { }} />
+      <Button variant="secondary" label="Secondary" onClick={() => { }} />
+      <Button variant="outline" label="Outline" onClick={() => { }} />
+      <Button variant="ghost" label="Ghost" onClick={() => { }} />
     </div>
   ),
   parameters: {
     docs: {
       description: {
-        story: 'Overview of all button variants, sizes, and states.',
+        story: 'All button variants displayed together for comparison.',
+      },
+    },
+  },
+};
+
+export const AllSizes: Story = {
+  render: () => (
+    <div className="flex items-center gap-4">
+      <Button variant="primary" size="sm" label="Small" onClick={() => { }} />
+      <Button variant="primary" size="md" label="Medium" onClick={() => { }} />
+      <Button variant="primary" size="lg" label="Large" onClick={() => { }} />
+    </div>
+  ),
+  parameters: {
+    docs: {
+      description: {
+        story: 'All button sizes displayed together for comparison.',
+      },
+    },
+  },
+};
+
+export const AllStates: Story = {
+  render: () => (
+    <div className="flex flex-wrap gap-4">
+      <Button variant="primary" label="Normal" onClick={() => { }} />
+      <Button variant="primary" disabled label="Disabled" onClick={() => { }} />
+      <Button variant="primary" loading label="Loading" onClick={() => { }} />
+    </div>
+  ),
+  parameters: {
+    docs: {
+      description: {
+        story: 'Button in different states: normal, disabled, and loading.',
       },
     },
   },
