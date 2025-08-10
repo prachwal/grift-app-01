@@ -1,3 +1,7 @@
+// LinkCard.tsx - Migrated to preact-nebula-ui (with type workaround)
+
+// @ts-ignore - brak definicji typów w pakiecie
+import { Card, CardBody } from 'preact-nebula-ui';
 import type { ComponentChildren } from 'preact';
 import { Icon } from './Icon';
 
@@ -20,15 +24,17 @@ export const LinkCard: React.FC<LinkCardProps> = ({
     } : {};
 
     return (
-        <a
-            href={href}
-            className="inline-flex items-center px-6 py-3 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors duration-200"
-            {...linkProps}
-        >
-            <Icon className="mr-2">
-                {icon}
-            </Icon>
-            {children}
+        <a href={href} {...linkProps} className="block">
+            <Card className="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200 cursor-pointer">
+                <CardBody className="px-6 py-3">
+                    <div className="inline-flex items-center text-gray-700 dark:text-gray-300">
+                        <Icon className="mr-2">
+                            {icon}
+                        </Icon>
+                        {children}
+                    </div>
+                </CardBody>
+            </Card>
         </a>
     );
 };

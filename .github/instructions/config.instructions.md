@@ -13,6 +13,12 @@ Zalecane: zapoznaj się z tym README przed implementacją nowych endpointów lub
 
 Projekt frontendowy oparty o Preact, Vite oraz TypeScript. Wykorzystuje nowoczesną architekturę z separacją warstw prezentacji (komponenty), stron (pages/layouts) oraz logiki biznesowej (services, hooks). Zarządzanie stanem realizowane jest z @preact/signals. System design tokens zapewnia spójność motywu i wsparcie dla dark mode. Testy jednostkowe i integracyjne realizowane są z użyciem Vitest i @testing-library/preact. Storybook służy do dokumentacji i prezentacji komponentów.
 
+## Porty i adresy
+
+- **Frontend (Vite dev server):** http://localhost:5174/
+- **API (Netlify functions):** http://localhost:8888/
+- **API endpoint przykład:** http://localhost:8888/.netlify/functions/hello
+
 ## Używane technologie i wersje
 
 ### Core Dependencies

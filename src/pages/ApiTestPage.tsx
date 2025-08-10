@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'preact/hooks';
+import { SelectDebugWrapper } from '../components/debug/SelectDebugWrapper';
 import { ApiEndpointTest } from '../components/ApiEndpointTest';
-import { sampleApiCollection } from '../data/sampleApiCollection';
 import { apiEndpointService } from '../services/apiEndpointService';
 import type { TestResult, ApiCollection } from '../types/apiTesting';
+import { logComponent, logSelectComponent, logInfo } from '../utils/logger';
 
 /**
  * @fileoverview API Test page component for testing Netlify functions
@@ -10,6 +11,8 @@ import type { TestResult, ApiCollection } from '../types/apiTesting';
  */
 
 export function ApiTestPage() {
+    logInfo('ApiTestPage component initializing');
+
     const [collections, setCollections] = useState<ApiCollection[]>([]);
     const [selectedCollectionName, setSelectedCollectionName] = useState<string>('');
     const [selectedEndpointId, setSelectedEndpointId] = useState<string>('');
@@ -19,26 +22,32 @@ export function ApiTestPage() {
     useEffect(() => {
         const initializeCollections = async () => {
             try {
+                logInfo('Initializing collections...');
                 console.log('Initializing collections...');
 
-                // Add sample collection
-                apiEndpointService.addCollection(sampleApiCollection);
-                console.log('Added sample collection');
-
-                // Load collections from JSON definitions
-                console.log('Loading JSON definitions for hello...');
-                await apiEndpointService.loadFromJsonDefinitions(['hello']);
+                // Load collections from JSON definitions only - no more sample collection
+                logInfo('Loading JSON definitions for hello and example...');
+                console.log('Loading JSON definitions for hello and example...');
+                await apiEndpointService.loadFromJsonDefinitions(['hello', 'example']);
+                logInfo('Finished loading JSON definitions');
                 console.log('Finished loading JSON definitions');
 
                 const loadedCollections = apiEndpointService.collections;
+                logInfo('All loaded collections:', loadedCollections);
                 console.log('All loaded collections:', loadedCollections);
                 setCollections(loadedCollections);
 
-                // Select first collection and endpoint - prefer JSON collection over sample
+                // Select first collection and endpoint - prefer Hello over Example API Functions
                 if (loadedCollections.length > 0) {
-                    // Try to find JSON collection first (Hello API Functions)
-                    const jsonCollection = loadedCollections.find(col => col.name === 'Hello API Functions');
-                    const firstCollection = jsonCollection || loadedCollections[0];
+                    // Try to find JSON collections first (prefer Hello or Example API Functions)
+                    const helloCollection = loadedCollections.find(col => col.name === 'Hello API Functions');
+                    const exampleCollection = loadedCollections.find(col => col.name === 'Example API Functions');
+                    const firstCollection = helloCollection || exampleCollection || loadedCollections[0];
+
+                    logComponent('Selecting default collection', {
+                        selected: firstCollection.name,
+                        available: loadedCollections.map(c => c.name)
+                    });
 
                     setSelectedCollectionName(firstCollection.name);
                     if (firstCollection.endpoints.length > 0) {
@@ -202,10 +211,16 @@ export function ApiTestPage() {
                                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                     Select Collection
                                 </label>
-                                <select
+                                <SelectDebugWrapper
                                     value={selectedCollectionName}
-                                    onChange={(e) => {
-                                        const newCollectionName = e.currentTarget.value;
+                                    onChange={(value: string) => {
+                                        logSelectComponent('Collection Select onChange', {
+                                            oldValue: selectedCollectionName,
+                                            newValue: value,
+                                            availableCollections: collections.map(c => c.name)
+                                        });
+
+                                        const newCollectionName = value;
                                         setSelectedCollectionName(newCollectionName);
                                         const newCollection = collections.find(col => col.name === newCollectionName);
                                         if (newCollection && newCollection.endpoints.length > 0) {
@@ -214,14 +229,12 @@ export function ApiTestPage() {
                                             setSelectedEndpointId('');
                                         }
                                     }}
-                                    className="w-full p-2 text-sm bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-gray-100"
-                                >
-                                    {collections.map((collection) => (
-                                        <option key={collection.id} value={collection.name}>
-                                            {collection.name}
-                                        </option>
-                                    ))}
-                                </select>
+                                    size="small"
+                                    options={collections.map((collection) => ({
+                                        value: collection.name,
+                                        label: collection.name
+                                    }))}
+                                />
                             </div>
                         )}
 

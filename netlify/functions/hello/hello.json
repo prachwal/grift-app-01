@@ -17,7 +17,12 @@
                     "type": "string",
                     "required": true,
                     "defaultValue": "hello",
-                    "description": "Command to execute"
+                    "description": "Command to execute",
+                    "disabled": true,
+                    "tags": [
+                        "system",
+                        "internal"
+                    ]
                 },
                 "name": {
                     "type": "string",
@@ -25,7 +30,10 @@
                     "defaultValue": "World",
                     "description": "Name to greet",
                     "min": 1,
-                    "max": 64
+                    "max": 64,
+                    "tags": [
+                        "user-input"
+                    ]
                 }
             },
             "responses": [
@@ -85,13 +93,22 @@
                     "type": "string",
                     "required": true,
                     "defaultValue": "health",
-                    "description": "Command to execute"
+                    "description": "Command to execute",
+                    "disabled": true,
+                    "tags": [
+                        "system",
+                        "internal"
+                    ]
                 },
                 "detailed": {
                     "type": "boolean",
                     "required": false,
                     "defaultValue": false,
-                    "description": "Return detailed health information"
+                    "description": "Return detailed health information",
+                    "tags": [
+                        "option",
+                        "detail"
+                    ]
                 }
             },
             "responses": [
@@ -150,7 +167,12 @@
                     "type": "string",
                     "required": true,
                     "defaultValue": "status",
-                    "description": "Command to execute"
+                    "description": "Command to execute",
+                    "disabled": true,
+                    "tags": [
+                        "system",
+                        "internal"
+                    ]
                 },
                 "component": {
                     "type": "string",
@@ -162,6 +184,10 @@
                         "database",
                         "cache",
                         "all"
+                    ],
+                    "tags": [
+                        "selection",
+                        "monitoring"
                     ]
                 }
             },
@@ -236,7 +262,12 @@
                     "type": "string",
                     "required": true,
                     "defaultValue": "info",
-                    "description": "Command to execute"
+                    "description": "Command to execute",
+                    "disabled": true,
+                    "tags": [
+                        "system",
+                        "internal"
+                    ]
                 },
                 "include": {
                     "type": "array",
@@ -250,6 +281,10 @@
                         "runtime",
                         "memory",
                         "environment"
+                    ],
+                    "tags": [
+                        "selection",
+                        "filtering"
                     ]
                 }
             },
@@ -315,14 +350,23 @@
                     "type": "string",
                     "required": true,
                     "defaultValue": "ping",
-                    "description": "Command to execute"
+                    "description": "Command to execute",
+                    "disabled": true,
+                    "tags": [
+                        "system",
+                        "internal"
+                    ]
                 },
                 "echo": {
                     "type": "string",
                     "required": false,
                     "defaultValue": "pong",
                     "description": "Message to echo back",
-                    "max": 256
+                    "max": 256,
+                    "tags": [
+                        "user-input",
+                        "message"
+                    ]
                 }
             },
             "responses": [

@@ -18,6 +18,9 @@ dist-ssr
 .idea
 .DS_Store
 *.suo
+
+# Temporary files
+/tmp
 *.ntvs*
 *.njsproj
 *.sln

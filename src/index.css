@@ -1,6 +1,11 @@
+/* If you use Tailwind, ensure your build tool (e.g., Vite) is configured with PostCSS and Tailwind plugin.
+   Otherwise, remove these lines to avoid errors. */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Import preact-nebula-ui styles */
+@import './styles/preact-nebula-ui.css';
 
 @layer base {
   :root {

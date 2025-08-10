@@ -26,6 +26,8 @@ export const ParameterSchema = z.object({
     pattern: z.string().optional(), // regex pattern for validation
     min: z.number().optional(), // min value for numbers, min length for strings
     max: z.number().optional(), // max value for numbers, max length for strings
+    tags: z.array(z.string()).optional(), // categorization tags for parameters
+    disabled: z.boolean().optional().default(false), // if true, parameter is read-only/disabled in UI
 });
 export type Parameter = z.infer<typeof ParameterSchema>;
 

@@ -21,6 +21,7 @@ export const sampleApiCollection: ApiCollection = {
                     name: 'cmd',
                     type: 'string',
                     required: true,
+                    disabled: false,
                     defaultValue: 'hello',
                     description: 'Command to execute'
                 },
@@ -28,6 +29,7 @@ export const sampleApiCollection: ApiCollection = {
                     name: 'name',
                     type: 'string',
                     required: false,
+                    disabled: false,
                     defaultValue: 'World',
                     description: 'Name to greet',
                     min: 1,
@@ -93,6 +95,7 @@ export const sampleApiCollection: ApiCollection = {
                     name: 'cmd',
                     type: 'string',
                     required: true,
+                    disabled: false,
                     defaultValue: 'status',
                     description: 'Command to execute'
                 },
@@ -100,6 +103,7 @@ export const sampleApiCollection: ApiCollection = {
                     name: 'component',
                     type: 'string',
                     required: false,
+                    disabled: false,
                     defaultValue: 'api',
                     description: 'Component to check',
                     enum: ['api', 'database', 'cache']
@@ -108,6 +112,7 @@ export const sampleApiCollection: ApiCollection = {
                     name: 'detailed',
                     type: 'boolean',
                     required: false,
+                    disabled: false,
                     defaultValue: false,
                     description: 'Return detailed status information'
                 }

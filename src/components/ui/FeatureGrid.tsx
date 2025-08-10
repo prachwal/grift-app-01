@@ -1,3 +1,7 @@
+// FeatureGrid.tsx - Migrated to preact-nebula-ui
+
+// @ts-ignore - brak definicji typów w pakiecie
+import { Grid } from 'preact-nebula-ui';
 import type { ComponentChildren } from 'preact';
 
 export interface FeatureGridProps {
@@ -6,8 +10,11 @@ export interface FeatureGridProps {
 
 export const FeatureGrid: React.FC<FeatureGridProps> = ({ children }) => {
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <Grid
+            cols={{ base: 1, md: 2, lg: 3 }}
+            gap="6"
+        >
             {children}
-        </div>
+        </Grid>
     );
 };

@@ -15,110 +15,164 @@ vi.mock('../../services/apiEndpointService', () => ({
         addCollection: vi.fn(),
         collections: [],
         getAllEndpoints: vi.fn(() => []),
-        discoverEndpoints: vi.fn(() => Promise.resolve([]))
+        discoverEndpoints: vi.fn(() => Promise.resolve([])),
+        loadFromJsonDefinitions: vi.fn(() => Promise.resolve())
     }
 }));
 
 // Mock fetch
 global.fetch = vi.fn();
 
-const mockCollection: ApiCollection = {
-    id: 'test-collection',
-    name: 'Test Collection',
-    description: 'Test API collection',
-    version: '1.0.0',
-    baseUrl: '/test',
-    globalHeaders: [],
-    endpoints: [
-        {
-            id: 'test-hello',
-            name: 'Hello Test',
-            description: 'Test hello endpoint',
-            method: 'GET',
-            path: '/hello',
-            pathParameters: [],
-            queryParameters: [
-                {
-                    name: 'cmd',
-                    type: 'string',
-                    required: true,
-                    defaultValue: 'hello',
-                    description: 'Command to execute'
-                },
-                {
-                    name: 'name',
-                    type: 'string',
-                    required: false,
-                    defaultValue: 'World',
-                    description: 'Name to greet'
-                }
-            ],
-            headers: [],
-            auth: { type: 'none' },
-            responses: [
-                {
-                    statusCode: 200,
-                    description: 'Success',
-                    body: { message: 'Hello World!' }
-                }
-            ],
-            testCases: [],
-            deprecated: false,
-            version: '1.0.0',
-            tags: ['test']
-        }
-    ]
-};
+const mockCollections: ApiCollection[] = [
+    {
+        id: 'hello-functions',
+        name: 'Hello API Functions',
+        description: 'Collection of hello service endpoints',
+        version: '1.0.0',
+        baseUrl: '/.netlify/functions',
+        globalHeaders: [],
+        endpoints: [
+            {
+                id: 'test-hello',
+                name: 'Hello Test',
+                description: 'Test hello endpoint',
+                method: 'GET',
+                path: '/hello',
+                pathParameters: [],
+                queryParameters: [
+                    {
+                        name: 'cmd',
+                        type: 'string',
+                        required: true,
+                        disabled: false,
+                        defaultValue: 'hello',
+                        description: 'Command to execute'
+                    },
+                    {
+                        name: 'name',
+                        type: 'string',
+                        required: false,
+                        disabled: false,
+                        defaultValue: 'World',
+                        description: 'Name to greet'
+                    }
+                ],
+                headers: [],
+                auth: { type: 'none' },
+                responses: [
+                    {
+                        statusCode: 200,
+                        description: 'Success',
+                        body: { message: 'Hello World!' }
+                    }
+                ],
+                testCases: [],
+                deprecated: false,
+                version: '1.0.0',
+                tags: ['test']
+            }
+        ]
+    },
+    {
+        id: 'example-functions',
+        name: 'Example API Functions',
+        description: 'Collection of example service endpoints for testing and demonstration',
+        version: '1.0.0',
+        baseUrl: '/.netlify/functions',
+        globalHeaders: [],
+        endpoints: [
+            {
+                id: 'test-user',
+                name: 'User Test',
+                description: 'Test user endpoint',
+                method: 'GET',
+                path: '/example',
+                pathParameters: [],
+                queryParameters: [
+                    {
+                        name: 'cmd',
+                        type: 'string',
+                        required: true,
+                        disabled: false,
+                        defaultValue: 'user',
+                        description: 'Command to execute'
+                    },
+                    {
+                        name: 'id',
+                        type: 'string',
+                        required: true,
+                        disabled: false,
+                        description: 'User ID to lookup'
+                    }
+                ],
+                headers: [],
+                auth: { type: 'none' },
+                responses: [
+                    {
+                        statusCode: 200,
+                        description: 'Success',
+                        body: { success: true, data: { id: '123', name: 'User 123' } }
+                    }
+                ],
+                testCases: [],
+                deprecated: false,
+                version: '1.0.0',
+                tags: ['test']
+            }
+        ]
+    }
+];
 
 describe('ApiTestPage', () => {
     const mockApiService = apiEndpointService as any;
 
     beforeEach(() => {
         vi.clearAllMocks();
-        mockApiService.collections = [mockCollection];
-        mockApiService.getAllEndpoints.mockReturnValue(mockCollection.endpoints);
+        mockApiService.collections = mockCollections;
+        mockApiService.getAllEndpoints.mockReturnValue(mockCollections.flatMap(c => c.endpoints));
+        mockApiService.loadFromJsonDefinitions.mockResolvedValue(undefined);
         (global.fetch as any).mockClear();
     });
 
-    it('should render loading state initially', () => {
+    it('should render API Test Console initially', () => {
         render(<ApiTestPage />);
 
-        expect(screen.getByText('Loading API collections...')).toBeInTheDocument();
+        expect(screen.getByText('API Test Console')).toBeInTheDocument();
+        expect(screen.getByText('Test and explore API endpoints with automatic validation and documentation')).toBeInTheDocument();
     });
 
     it('should render API collections after loading', async () => {
-        mockApiService.discoverEndpoints.mockResolvedValue([]);
+        mockApiService.loadFromJsonDefinitions.mockResolvedValue(undefined);
 
         render(<ApiTestPage />);
 
         await waitFor(() => {
             expect(screen.getByText('API Test Console')).toBeInTheDocument();
-            expect(screen.getByText('Test API')).toBeInTheDocument();
-            expect(screen.getByText('Hello Test')).toBeInTheDocument();
+            expect(screen.getByRole('heading', { name: 'Hello API Functions', level: 3 })).toBeInTheDocument();
+            expect(screen.getByRole('button', { name: /Hello Test.*GET/i })).toBeInTheDocument();
         });
     });
 
     it('should initialize collections on mount', async () => {
-        mockApiService.discoverEndpoints.mockResolvedValue([]);
+        mockApiService.loadFromJsonDefinitions.mockResolvedValue(undefined);
 
         render(<ApiTestPage />);
 
         await waitFor(() => {
-            expect(mockApiService.addCollection).toHaveBeenCalled();
-            expect(mockApiService.discoverEndpoints).toHaveBeenCalledWith('/.netlify/functions/hello');
+            expect(mockApiService.loadFromJsonDefinitions).toHaveBeenCalledWith(['hello', 'example']);
         });
     });
 
     it('should handle endpoint selection', async () => {
-        mockApiService.discoverEndpoints.mockResolvedValue([]);
+        mockApiService.loadFromJsonDefinitions.mockResolvedValue(undefined);
 
         render(<ApiTestPage />);
 
         await waitFor(() => {
-            expect(screen.getByText('Hello Test')).toBeInTheDocument();
+            expect(screen.getByRole('button', { name: /Hello Test.*GET/i })).toBeInTheDocument();
         });
 
-        const endpointButton = screen.getByText('Hello Test').closest('button');
+        const endpointButton = screen.getByRole('button', { name: /Hello Test.*GET/i });
         expect(endpointButton).toBeInTheDocument();
 
         fireEvent.click(endpointButton!);
@@ -130,7 +184,7 @@ describe('ApiTestPage', () => {
     });
 
     it('should execute API test and show results', async () => {
-        mockApiService.discoverEndpoints.mockResolvedValue([]);
+        mockApiService.loadFromJsonDefinitions.mockResolvedValue(undefined);
 
         const mockResponse = {
             ok: true,
@@ -148,11 +202,11 @@ describe('ApiTestPage', () => {
         render(<ApiTestPage />);
 
         await waitFor(() => {
-            expect(screen.getByText('Hello Test')).toBeInTheDocument();
+            expect(screen.getByRole('button', { name: /Hello Test.*GET/i })).toBeInTheDocument();
         });
 
-        // Select endpoint
-        const endpointButton = screen.getByText('Hello Test').closest('button');
+        // Select endpoint button in sidebar (not the heading)
+        const endpointButton = screen.getByRole('button', { name: /Hello Test.*GET/i });
         fireEvent.click(endpointButton!);
 
         await waitFor(() => {
@@ -165,7 +219,7 @@ describe('ApiTestPage', () => {
 
         await waitFor(() => {
             expect(global.fetch).toHaveBeenCalledWith(
-                expect.stringContaining('/hello?cmd=hello'),
+                expect.stringContaining('/.netlify/functions/hello'),
                 expect.objectContaining({
                     method: 'GET',
                     headers: expect.objectContaining({
@@ -177,18 +231,18 @@ describe('ApiTestPage', () => {
     });
 
     it('should handle API test errors', async () => {
-        mockApiService.discoverEndpoints.mockResolvedValue([]);
+        mockApiService.loadFromJsonDefinitions.mockResolvedValue(undefined);
 
         (global.fetch as any).mockRejectedValue(new Error('Network error'));
 
         render(<ApiTestPage />);
 
         await waitFor(() => {
-            expect(screen.getByText('Hello Test')).toBeInTheDocument();
+            expect(screen.getByRole('button', { name: /Hello Test.*GET/i })).toBeInTheDocument();
         });
 
-        // Select endpoint and execute test
-        const endpointButton = screen.getByText('Hello Test').closest('button');
+        // Select endpoint button in sidebar
+        const endpointButton = screen.getByRole('button', { name: /Hello Test.*GET/i });
         fireEvent.click(endpointButton!);
 
         await waitFor(() => {
@@ -205,7 +259,7 @@ describe('ApiTestPage', () => {
     });
 
     it('should show test history', async () => {
-        mockApiService.discoverEndpoints.mockResolvedValue([]);
+        mockApiService.loadFromJsonDefinitions.mockResolvedValue(undefined);
 
         const mockResponse = {
             ok: true,
@@ -220,11 +274,11 @@ describe('ApiTestPage', () => {
         render(<ApiTestPage />);
 
         await waitFor(() => {
-            expect(screen.getByText('Hello Test')).toBeInTheDocument();
+            expect(screen.getByRole('button', { name: /Hello Test.*GET/i })).toBeInTheDocument();
         });
 
         // Execute a test
-        const endpointButton = screen.getByText('Hello Test').closest('button');
+        const endpointButton = screen.getByRole('button', { name: /Hello Test.*GET/i });
         fireEvent.click(endpointButton!);
 
         await waitFor(() => {
@@ -242,7 +296,7 @@ describe('ApiTestPage', () => {
     });
 
     it('should clear test history', async () => {
-        mockApiService.discoverEndpoints.mockResolvedValue([]);
+        mockApiService.loadFromJsonDefinitions.mockResolvedValue(undefined);
 
         const mockResponse = {
             ok: true,
@@ -257,11 +311,11 @@ describe('ApiTestPage', () => {
         render(<ApiTestPage />);
 
         await waitFor(() => {
-            expect(screen.getByText('Hello Test')).toBeInTheDocument();
+            expect(screen.getByRole('button', { name: /Hello Test.*GET/i })).toBeInTheDocument();
         });
 
         // Execute a test first
-        const endpointButton = screen.getByText('Hello Test').closest('button');
+        const endpointButton = screen.getByRole('button', { name: /Hello Test.*GET/i });
         fireEvent.click(endpointButton!);
 
         await waitFor(() => {
@@ -282,10 +336,10 @@ describe('ApiTestPage', () => {
         expect(screen.queryByText('Test History')).not.toBeInTheDocument();
     });
 
-    it('should handle discovery errors gracefully', async () => {
-        mockApiService.discoverEndpoints.mockRejectedValue(new Error('Discovery failed'));
+    it('should handle initialization errors gracefully', async () => {
+        mockApiService.loadFromJsonDefinitions.mockRejectedValue(new Error('Load failed'));
 
-        const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => { });
+        const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => { });
 
         render(<ApiTestPage />);
 
@@ -293,18 +347,18 @@ describe('ApiTestPage', () => {
             expect(screen.getByText('API Test Console')).toBeInTheDocument();
         });
 
-        expect(consoleSpy).toHaveBeenCalledWith('Could not discover endpoints:', expect.any(Error));
+        expect(consoleSpy).toHaveBeenCalledWith('Failed to initialize collections:', expect.any(Error));
 
         consoleSpy.mockRestore();
     });
 
     it('should show empty state when no endpoint selected', async () => {
         mockApiService.collections = [{
-            ...mockCollection,
+            ...mockCollections[0],
             endpoints: []
         }];
         mockApiService.getAllEndpoints.mockReturnValue([]);
-        mockApiService.discoverEndpoints.mockResolvedValue([]);
+        mockApiService.loadFromJsonDefinitions.mockResolvedValue(undefined);
 
         render(<ApiTestPage />);
 

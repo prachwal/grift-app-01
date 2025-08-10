@@ -1,6 +1,10 @@
 import { useState, useEffect } from 'preact/hooks';
 import { Accordion, AccordionItem } from './ui';
+// @ts-ignore - brak definicji typów w pakiecie
+import { Input, Checkbox } from 'preact-nebula-ui';
+import { SelectDebugWrapper } from './debug/SelectDebugWrapper';
 import type { ApiEndpoint, Parameter, TestResult, HttpMethod } from '../types/apiTesting';
+import { logSelectComponent, logComponent } from '../utils/logger';
 
 interface ApiEndpointTestProps {
     endpoint: ApiEndpoint;
@@ -14,9 +18,21 @@ interface ParameterInputProps {
 }
 
 function ParameterInput({ parameter, value, onChange }: ParameterInputProps) {
+    logComponent(`ParameterInput rendering for parameter: ${parameter.name}`, {
+        parameter,
+        value,
+        hasEnum: !!parameter.enum
+    });
+
     const handleChange = (e: Event) => {
         const target = e.target as HTMLInputElement;
         let newValue: unknown = target.value;
+
+        logComponent(`Parameter ${parameter.name} change event`, {
+            type: parameter.type,
+            oldValue: value,
+            newValue: target.value
+        });
 
         // Type conversion based on parameter type
         switch (parameter.type) {
@@ -36,52 +52,96 @@ function ParameterInput({ parameter, value, onChange }: ParameterInputProps) {
         onChange(newValue);
     };
 
+    // Special handler for Select component
+    const handleSelectChange = (newValue: string) => {
+        logSelectComponent(`Select change for parameter ${parameter.name}`, {
+            parameter: parameter.name,
+            oldValue: value,
+            newValue: newValue
+        });
+        onChange(newValue);
+    };
+
     const renderInput = () => {
         switch (parameter.type) {
             case 'boolean':
                 return (
-                    <input
-                        type="checkbox"
+                    <Checkbox
                         checked={Boolean(value)}
                         onChange={handleChange}
-                        className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                    />
+                        disabled={parameter.disabled}
+                    >
+                        {parameter.description && parameter.description}
+                    </Checkbox>
                 );
             case 'array':
-                return (
-                    <input
+                return parameter.enum ? (
+                    <>
+                        {logSelectComponent(`Rendering Multi-Select for array parameter ${parameter.name}`, {
+                            parameter: parameter.name,
+                            enum: parameter.enum,
+                            value: Array.isArray(value) ? value : [],
+                            optionsCount: parameter.enum.length
+                        })}
+                        <SelectDebugWrapper
+                            value={Array.isArray(value) ? value : []}
+                            onChange={(selectedArray: string[]) => onChange(selectedArray)}
+                            placeholder="Select options..."
+                            size="small"
+                            disabled={parameter.disabled}
+                            multiple={true}
+                            options={parameter.enum.map((option: string) => ({
+                                value: option,
+                                label: option
+                            }))}
+                        />
+                        <div className="text-xs text-gray-500 mt-1">
+                            Hold Ctrl/Cmd to select multiple options
+                        </div>
+                    </>
+                ) : (
+                    <Input
                         type="text"
                         value={Array.isArray(value) ? value.join(', ') : String(value || '')}
                         onChange={handleChange}
                         placeholder="item1, item2, item3"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                        disabled={parameter.disabled}
                     />
                 );
             case 'number':
                 return (
-                    <input
+                    <Input
                         type="number"
                         value={String(value || '')}
                         onChange={handleChange}
                         min={parameter.min}
                         max={parameter.max}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                        disabled={parameter.disabled}
                     />
                 );
             default:
                 return parameter.enum ? (
-                    <select
-                        value={String(value || '')}
-                        onChange={handleChange}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                    >
-                        <option value="">Select...</option>
-                        {parameter.enum.map((option: string) => (
-                            <option key={option} value={option}>{option}</option>
-                        ))}
-                    </select>
+                    <>
+                        {logSelectComponent(`Rendering Select for parameter ${parameter.name}`, {
+                            parameter: parameter.name,
+                            enum: parameter.enum,
+                            value: String(value || ''),
+                            optionsCount: parameter.enum.length
+                        })}
+                        <SelectDebugWrapper
+                            value={String(value || '')}
+                            onChange={handleSelectChange}
+                            placeholder="Select..."
+                            size="small"
+                            disabled={parameter.disabled}
+                            options={parameter.enum.map((option: string) => ({
+                                value: option,
+                                label: option
+                            }))}
+                        />
+                    </>
                 ) : (
-                    <input
+                    <Input
                         type="text"
                         value={String(value || '')}
                         onChange={handleChange}
@@ -89,21 +149,37 @@ function ParameterInput({ parameter, value, onChange }: ParameterInputProps) {
                         pattern={parameter.pattern}
                         minLength={parameter.min}
                         maxLength={parameter.max}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                        disabled={parameter.disabled}
                     />
                 );
         }
     };
 
     return (
-        <div className="space-y-2">
+        <div className={`space-y-2 ${parameter.disabled ? 'opacity-60' : ''}`}>
             <div className="flex items-center justify-between">
-                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                    {parameter.name}
-                    {parameter.required && <span className="text-red-500 ml-1">*</span>}
-                </label>
+                <div className="flex items-center gap-2">
+                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                        {parameter.name}
+                        {parameter.required && <span className="text-red-500 ml-1">*</span>}
+                        {parameter.disabled && <span className="text-gray-400 ml-1">(disabled)</span>}
+                    </label>
+                    {parameter.tags && parameter.tags.length > 0 && (
+                        <div className="flex gap-1">
+                            {parameter.tags.map(tag => (
+                                <span
+                                    key={tag}
+                                    className="text-xs bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 px-1 py-0.5 rounded"
+                                >
+                                    {tag}
+                                </span>
+                            ))}
+                        </div>
+                    )}
+                </div>
                 <span className="text-xs text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded">
                     {parameter.type}
+                    {parameter.enum && ` (${parameter.enum.length} options)`}
                 </span>
             </div>
             {parameter.description && (

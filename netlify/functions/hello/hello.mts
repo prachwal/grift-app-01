@@ -93,7 +93,12 @@ const statusCommand = createCommand(
 // Info command - detailed system information
 const infoCommand = createCommand(
   z.object({
-    include: z.array(z.enum(['system', 'runtime', 'memory', 'environment'])).optional().default(['system']),
+    include: z.union([
+      z.enum(['system', 'runtime', 'memory', 'environment']),
+      z.array(z.enum(['system', 'runtime', 'memory', 'environment']))
+    ]).optional().default(['system']).transform((val) =>
+      Array.isArray(val) ? val : [val]
+    ),
   }),
   async (params) => {
     const info: Record<string, any> = {

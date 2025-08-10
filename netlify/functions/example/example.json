@@ -1,0 +1,234 @@
+{
+    "collection": {
+        "id": "example-functions",
+        "name": "Example API Functions",
+        "description": "Collection of example service endpoints for testing and demonstration",
+        "version": "1.0.0",
+        "baseUrl": "/.netlify/functions"
+    },
+    "commands": {
+        "user": {
+            "name": "User Info Command",
+            "description": "Retrieve user information with optional profile data",
+            "method": "GET",
+            "path": "/example",
+            "parameters": {
+                "cmd": {
+                    "type": "string",
+                    "required": true,
+                    "defaultValue": "user",
+                    "description": "Command to execute"
+                },
+                "id": {
+                    "type": "string",
+                    "required": true,
+                    "description": "User ID to lookup",
+                    "min": 1,
+                    "max": 50
+                },
+                "includeProfile": {
+                    "type": "boolean",
+                    "required": false,
+                    "defaultValue": false,
+                    "description": "Whether to include detailed profile information"
+                }
+            },
+            "responses": [
+                {
+                    "statusCode": 200,
+                    "description": "User information retrieved",
+                    "body": {
+                        "success": true,
+                        "data": {
+                            "id": "123",
+                            "name": "User 123",
+                            "timestamp": "2025-01-01T12:00:00.000Z",
+                            "profile": {
+                                "email": "user123@example.com",
+                                "role": "user",
+                                "lastLogin": "2025-01-01T11:30:00.000Z",
+                                "preferences": {
+                                    "theme": "dark",
+                                    "language": "en"
+                                }
+                            }
+                        },
+                        "meta": {
+                            "timestamp": "2025-01-01T12:00:00.000Z",
+                            "requestId": "abc123"
+                        }
+                    }
+                }
+            ],
+            "testCases": [
+                {
+                    "name": "Basic user info",
+                    "parameters": {
+                        "cmd": "user",
+                        "id": "123"
+                    },
+                    "expectedStatus": 200
+                },
+                {
+                    "name": "User info with profile",
+                    "parameters": {
+                        "cmd": "user",
+                        "id": "456",
+                        "includeProfile": true
+                    },
+                    "expectedStatus": 200
+                }
+            ]
+        },
+        "analytics": {
+            "name": "Analytics Data Command",
+            "description": "Retrieve analytics metrics with timeframe filtering",
+            "method": "GET",
+            "path": "/example",
+            "parameters": {
+                "cmd": {
+                    "type": "string",
+                    "required": true,
+                    "defaultValue": "analytics",
+                    "description": "Command to execute"
+                },
+                "metric": {
+                    "type": "string",
+                    "required": false,
+                    "defaultValue": "visitors",
+                    "description": "Metric type to retrieve",
+                    "enum": [
+                        "visitors",
+                        "pageviews",
+                        "sessions"
+                    ]
+                },
+                "timeframe": {
+                    "type": "string",
+                    "required": false,
+                    "defaultValue": "24h",
+                    "description": "Time period for analytics",
+                    "enum": [
+                        "1h",
+                        "24h",
+                        "7d",
+                        "30d"
+                    ]
+                }
+            },
+            "responses": [
+                {
+                    "statusCode": 200,
+                    "description": "Analytics data retrieved",
+                    "body": {
+                        "success": true,
+                        "data": {
+                            "metric": "visitors",
+                            "timeframe": "24h",
+                            "value": 5432,
+                            "change": 15,
+                            "timestamp": "2025-01-01T12:00:00.000Z",
+                            "breakdown": {
+                                "desktop": 3200,
+                                "mobile": 1800,
+                                "tablet": 432
+                            }
+                        },
+                        "meta": {
+                            "timestamp": "2025-01-01T12:00:00.000Z",
+                            "requestId": "def456"
+                        }
+                    }
+                }
+            ],
+            "testCases": [
+                {
+                    "name": "Default visitors metric",
+                    "parameters": {
+                        "cmd": "analytics"
+                    },
+                    "expectedStatus": 200
+                },
+                {
+                    "name": "Pageviews for 7 days",
+                    "parameters": {
+                        "cmd": "analytics",
+                        "metric": "pageviews",
+                        "timeframe": "7d"
+                    },
+                    "expectedStatus": 200
+                }
+            ]
+        },
+        "echo": {
+            "name": "Echo Command",
+            "description": "Echo back a message with optional repetition",
+            "method": "GET",
+            "path": "/example",
+            "parameters": {
+                "cmd": {
+                    "type": "string",
+                    "required": true,
+                    "defaultValue": "echo",
+                    "description": "Command to execute"
+                },
+                "message": {
+                    "type": "string",
+                    "required": true,
+                    "description": "Message to echo back",
+                    "min": 1,
+                    "max": 200
+                },
+                "repeat": {
+                    "type": "number",
+                    "required": false,
+                    "defaultValue": 1,
+                    "description": "Number of times to repeat the message",
+                    "min": 1,
+                    "max": 5
+                }
+            },
+            "responses": [
+                {
+                    "statusCode": 200,
+                    "description": "Message echoed successfully",
+                    "body": {
+                        "success": true,
+                        "data": {
+                            "original": "Hello World",
+                            "echoed": [
+                                "Hello World",
+                                "Hello World"
+                            ],
+                            "timestamp": "2025-01-01T12:00:00.000Z",
+                            "length": 11
+                        },
+                        "meta": {
+                            "timestamp": "2025-01-01T12:00:00.000Z",
+                            "requestId": "ghi789"
+                        }
+                    }
+                }
+            ],
+            "testCases": [
+                {
+                    "name": "Simple echo",
+                    "parameters": {
+                        "cmd": "echo",
+                        "message": "test"
+                    },
+                    "expectedStatus": 200
+                },
+                {
+                    "name": "Echo with repetition",
+                    "parameters": {
+                        "cmd": "echo",
+                        "message": "repeat me",
+                        "repeat": 3
+                    },
+                    "expectedStatus": 200
+                }
+            ]
+        }
+    }
+}

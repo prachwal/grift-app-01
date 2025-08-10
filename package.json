@@ -24,6 +24,7 @@
     "@types/uuid": "^10.0.0",
     "preact": "^10.27.0",
     "preact-iso": "^2.9.2",
+    "preact-nebula-ui": "^1.2.1",
     "uuid": "^11.1.0",
     "zod": "^4.0.14"
   },

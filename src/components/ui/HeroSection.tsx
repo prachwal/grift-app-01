@@ -1,3 +1,7 @@
+// HeroSection.tsx - Migrated to preact-nebula-ui
+
+// @ts-ignore - brak definicji typów w pakiecie
+import { Container, Stack } from 'preact-nebula-ui';
 import { Button } from '../Button';
 
 export interface HeroSectionProps {
@@ -22,9 +26,9 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
     secondaryButton
 }) => {
     return (
-        <section className="mb-12">
-            <div className="text-center">
-                <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-gray-100 mb-6 leading-tight">
+        <Container size="xl" className="mb-12">
+            <Stack direction="vertical" spacing="8" align="center" className="text-center">
+                <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-gray-100 leading-tight">
                     {title}
                     {subtitle && (
                         <span className="block text-primary-600 dark:text-primary-400 mt-2">
@@ -32,11 +36,15 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                         </span>
                     )}
                 </h1>
-                <p className="text-xl text-gray-600 dark:text-gray-400 mb-8 max-w-2xl mx-auto">
+                <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl">
                     {description}
                 </p>
                 {(primaryButton || secondaryButton) && (
-                    <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                    <Stack
+                        direction={{ base: "vertical", sm: "horizontal" }}
+                        spacing="4"
+                        align="center"
+                    >
                         {primaryButton && (
                             <Button
                                 variant="primary"
@@ -53,9 +61,9 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                                 onClick={secondaryButton.onClick}
                             />
                         )}
-                    </div>
+                    </Stack>
                 )}
-            </div>
-        </section>
+            </Stack>
+        </Container>
     );
 };

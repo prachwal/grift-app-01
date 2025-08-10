@@ -1,3 +1,7 @@
+// FeatureCard.tsx - Migrated to preact-nebula-ui
+
+// @ts-ignore - brak definicji typów w pakiecie
+import { Card, CardBody } from 'preact-nebula-ui';
 import type { ComponentChildren } from 'preact';
 import { Icon } from './Icon';
 
@@ -22,18 +26,23 @@ export const FeatureCard: React.FC<FeatureCardProps> = ({
     description
 }) => {
     return (
-        <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-6 transition-colors duration-300" data-testid="feature-card">
-            <div className={`w-12 h-12 ${iconBgClasses[iconBgColor]} rounded-lg flex items-center justify-center mb-4`}>
-                <Icon size="lg">
-                    {icon}
-                </Icon>
-            </div>
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
-                {title}
-            </h3>
-            <p className="text-gray-600 dark:text-gray-400">
-                {description}
-            </p>
-        </div>
+        <Card
+            className="bg-gray-50 dark:bg-gray-700 transition-colors duration-300"
+            data-testid="feature-card"
+        >
+            <CardBody className="p-6">
+                <div className={`w-12 h-12 ${iconBgClasses[iconBgColor]} rounded-lg flex items-center justify-center mb-4`}>
+                    <Icon size="lg">
+                        {icon}
+                    </Icon>
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
+                    {title}
+                </h3>
+                <p className="text-gray-600 dark:text-gray-400">
+                    {description}
+                </p>
+            </CardBody>
+        </Card>
     );
 };

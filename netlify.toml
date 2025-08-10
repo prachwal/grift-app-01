@@ -21,7 +21,7 @@ Cache-Control = "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=
 
 [dev]
 command = "npm run dev" # Command to start your dev server
-port = 3000             # Port that the dev server will be listening on
+port = 8888             # Port that the dev server will be listening on
 publish = "dist"        # Folder with the static content for _redirect file
 targetPort = 5173       # Port that the dev server will be listening on
 framework = "vite"      # Framework used for the project

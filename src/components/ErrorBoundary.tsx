@@ -1,5 +1,6 @@
 import { Component, type ComponentChildren } from 'preact';
 import { signal } from '@preact/signals';
+import { logError, logComponentError } from '../utils/logger';
 
 /**
  * @fileoverview Error Boundary component for catching and handling errors
@@ -30,6 +31,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
 
     static getDerivedStateFromError(error: Error): Partial<ErrorBoundaryState> {
         errorCount.value++;
+        logError('ErrorBoundary caught error in getDerivedStateFromError', error);
         return {
             hasError: true,
             error
@@ -37,7 +39,23 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
     }
 
     componentDidCatch(error: Error, errorInfo: any) {
+        logComponentError('ErrorBoundary', error, {
+            errorInfo,
+            componentStack: errorInfo?.componentStack,
+            errorBoundary: 'ErrorBoundary'
+        });
+
         console.error('ErrorBoundary caught an error:', error, errorInfo);
+
+        // Additional detailed logging for Select-related errors
+        if (error.message?.includes('trigger') || error.stack?.includes('preact-nebula-ui')) {
+            logError('Select component error detected', {
+                message: error.message,
+                stack: error.stack,
+                componentStack: errorInfo?.componentStack,
+                timestamp: new Date().toISOString()
+            });
+        }
 
         if (this.props.onError) {
             this.props.onError(error, errorInfo);

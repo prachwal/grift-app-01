@@ -1,5 +1,7 @@
-// Button.tsx
+// Button.tsx - Migrated to preact-nebula-ui
 
+// @ts-ignore - brak definicji typów w pakiecie
+import { Button as NebulaButton } from 'preact-nebula-ui';
 import type { FunctionalComponent } from 'preact';
 
 export interface ButtonProps {
@@ -20,136 +22,32 @@ export interface ButtonProps {
 }
 
 export const Button: FunctionalComponent<ButtonProps> = ({
-  variant = 'secondary',
-  size = 'md',
   label,
-  disabled = false,
-  fullWidth = false,
-  loading = false,
   onClick,
+  size,
   ...props
 }) => {
-  // Base classes
-  const baseClasses = [
-    'inline-flex',
-    'items-center',
-    'justify-center',
-    'font-medium',
-    'rounded-lg',
-    'transition-colors',
-    'duration-200',
-    'focus:outline-none',
-    'focus:ring-2',
-    'focus:ring-offset-2',
-    'disabled:opacity-50',
-    'disabled:cursor-not-allowed',
-  ];
-
-  // Size variants using design tokens
-  const sizeClasses = {
-    sm: ['px-3', 'py-1.5', 'text-sm', 'h-8'],
-    md: ['px-4', 'py-2', 'text-base', 'h-10'],
-    lg: ['px-6', 'py-3', 'text-lg', 'h-12'],
+  // Convert Event to MouseEvent for compatibility
+  const handleClick = (event: MouseEvent) => {
+    onClick(event as Event);
   };
 
-  // Variant styles using design tokens
-  const variantClasses = {
-    primary: [
-      'bg-primary-500',
-      'text-white',
-      'hover:bg-primary-600',
-      'active:bg-primary-700',
-      'focus:ring-primary-500',
-      'dark:bg-primary-500',
-      'dark:hover:bg-primary-600',
-    ],
-    secondary: [
-      'bg-gray-100',
-      'text-gray-900',
-      'hover:bg-gray-200',
-      'active:bg-gray-300',
-      'focus:ring-gray-500',
-      'dark:bg-gray-700',
-      'dark:text-gray-100',
-      'dark:hover:bg-gray-600',
-      'dark:active:bg-gray-500',
-    ],
-    outline: [
-      'bg-transparent',
-      'text-gray-700',
-      'border',
-      'border-gray-300',
-      'hover:bg-gray-50',
-      'active:bg-gray-100',
-      'focus:ring-gray-500',
-      'dark:text-gray-300',
-      'dark:border-gray-600',
-      'dark:hover:bg-gray-800',
-      'dark:active:bg-gray-700',
-    ],
-    ghost: [
-      'bg-transparent',
-      'text-gray-700',
-      'hover:bg-gray-100',
-      'active:bg-gray-200',
-      'focus:ring-gray-500',
-      'dark:text-gray-300',
-      'dark:hover:bg-gray-800',
-      'dark:active:bg-gray-700',
-    ],
-  };
+  // Map our size values to preact-nebula-ui size values
+  const sizeMapping = {
+    'sm': 'small',
+    'md': 'medium',
+    'lg': 'large'
+  } as const;
 
-  // Width classes
-  const widthClasses = fullWidth ? ['w-full'] : [];
-
-  // Combine all classes
-  const allClasses = [
-    ...baseClasses,
-    ...sizeClasses[size],
-    ...variantClasses[variant],
-    ...widthClasses,
-  ].join(' ');
-
-  // Handle click - don't call onClick if disabled or loading
-  const handleClick = (event: Event) => {
-    if (disabled || loading) {
-      event.preventDefault();
-      return;
-    }
-    onClick?.(event);
-  };
+  const mappedSize = size ? sizeMapping[size] : 'medium';
 
   return (
-    <button
-      type="button"
-      className={allClasses}
-      disabled={disabled || loading}
+    <NebulaButton
       onClick={handleClick}
+      size={mappedSize}
       {...props}
     >
-      {loading && (
-        <svg
-          className="animate-spin -ml-1 mr-2 h-4 w-4"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-        >
-          <circle
-            className="opacity-25"
-            cx="12"
-            cy="12"
-            r="10"
-            stroke="currentColor"
-            strokeWidth="4"
-          />
-          <path
-            className="opacity-75"
-            fill="currentColor"
-            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-          />
-        </svg>
-      )}
       {label}
-    </button>
+    </NebulaButton>
   );
 };
